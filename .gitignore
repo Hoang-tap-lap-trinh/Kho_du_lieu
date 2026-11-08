@@ -1,0 +1,18 @@
+# Python virtual environment
+.venv/
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environment & credentials
+.env
+
+# Large generated data & dumps (giữ lại file mẫu, loại trừ cache lớn nếu cần)
+# Giữ data/*.csv và output/*.csv để người dùng clone về là có dữ liệu chạy ngay
+
+# IDE & OS
+.vscode/
+.idea/
+*.swp
+Thumbs.db
+Desktop.ini

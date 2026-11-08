@@ -1,0 +1,16 @@
+﻿ma_mon,ten_mon,ten_khoa,loai_mon,tong_luot_hoc,so_luot_rot,ty_le_rot_pct,diem_tb_mon
+KHCB001,Toán cao cấp A1,Khoa Khoa học cơ bản,Đại cương,4916,503.0,10.23,5.6
+KTS008,Kinh tế lượng,Khoa Kinh tế số và Thương mại điện tử,Cơ sở ngành,1548,113.0,7.3,5.86
+KTMT008,Xử lý tín hiệu số,Khoa Kỹ thuật máy tính và Điện tử,Cơ sở ngành,987,65.0,6.59,5.97
+KHMT008,Lập trình Java,Khoa Khoa học máy tính,Cơ sở ngành,2227,144.0,6.47,5.9
+KHMT007,Mạng máy tính,Khoa Khoa học máy tính,Cơ sở ngành,2231,121.0,5.42,6.12
+KHMT001,Cấu trúc dữ liệu và giải thuật,Khoa Khoa học máy tính,Cơ sở ngành,2239,105.0,4.69,6.19
+KHMT031,Phát triển game,Khoa Khoa học máy tính,Chuyên ngành,2146,90.0,4.19,6.29
+KHMT005,Kiến trúc máy tính,Khoa Khoa học máy tính,Cơ sở ngành,2234,90.0,4.03,6.4
+KTMT003,Mạch điện tử tương tự,Khoa Kỹ thuật máy tính và Điện tử,Cơ sở ngành,985,39.0,3.96,6.33
+KTMT018,Anten và truyền sóng,Khoa Kỹ thuật máy tính và Điện tử,Chuyên ngành,955,30.0,3.14,6.22
+KTMT031,Cơ sở dữ liệu IoT,Khoa Kỹ thuật máy tính và Điện tử,Chuyên ngành,941,26.0,2.76,6.73
+KTS024,Quản trị chiến lược,Khoa Kinh tế số và Thương mại điện tử,Chuyên ngành,1455,40.0,2.75,6.43
+KHMT030,Chương trình dịch,Khoa Khoa học máy tính,Chuyên ngành,2158,59.0,2.73,6.33
+KTS012,Luật kinh tế,Khoa Kinh tế số và Thương mại điện tử,Cơ sở ngành,1521,41.0,2.7,6.48
+KTMT025,Mạng viễn thông,Khoa Kỹ thuật máy tính và Điện tử,Chuyên ngành,943,25.0,2.65,6.61

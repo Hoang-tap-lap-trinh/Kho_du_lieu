@@ -1,0 +1,11 @@
+﻿ma_test_case,hang_muc,mo_ta_kiem_tra,ket_qua_ky_vong,ket_qua_thuc_te,trang_thai
+TC01,Quy mô dữ liệu,Bảng fact_ket_qua_hoc_tap có tối thiểu 100.000 dòng,">= 100,000","224,778",PASS
+TC02,Đối soát nguồn - kho,Số dòng DangKyHocPhan nguồn = fact_ket_qua_hoc_tap + etl_reject,"227,267","227,267 (Fact=224,778, Reject=2,489)",PASS
+TC03,Đối soát nguồn - kho,Số dòng HoSoTuyenSinh nguồn = fact_tuyen_sinh + etl_reject,"8,012","8,012 (Fact=7,964, Reject=48)",PASS
+TC04,Đối soát sinh viên,Số sinh viên nguồn khớp số bản ghi is_current = 1 trong dim_sinh_vien,"4,948","4,948",PASS
+TC05,Miền giá trị điểm,"Không có điểm NULL hoặc ngoài khoảng [0, 10] trong fact_ket_qua_hoc_tap",0 dòng lỗi,0 dòng lỗi,PASS
+TC06,Tính đúng đắn công thức,"Điểm tổng kết khớp công thức ROUND(0.4*QT + 0.6*Thi, 1)",0 dòng lệch,0 dòng lệch,PASS
+TC07,Tính duy nhất (Grain),Không có sinh viên đăng ký trùng cùng một lớp học phần trong Fact,0 cặp trùng,0 cặp trùng,PASS
+TC08,Toàn vẹn khóa ngoại,Không có khóa ngoại mồ côi giữa Fact và các Dimension,0 dòng mồ côi,0 dòng mồ côi,PASS
+TC09,Chuẩn hóa danh mục,"Giới tính chỉ gồm {Nam, Nữ} và tỉnh/thành thuộc đúng 18 tỉnh/thành chuẩn",0 giá trị lạ,"Tỉnh lạ=0, Giới tính lạ=0",PASS
+TC10,Tính đúng của SCD2,"Các phiên bản SCD2 của sinh viên đổi ngành được đóng đúng, không chồng lấn ngày hiệu lực",Có dòng lịch sử & 0 chồng lấn,"Dòng lịch sử=149, Chồng lấn=0",PASS

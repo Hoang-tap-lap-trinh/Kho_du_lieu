@@ -1,0 +1,25 @@
+﻿buoc,bang,so_dong_doc,so_dong_nap,so_dong_loai,ghi_chu
+EXTRACT,Khoa,4,4,0,Đọc từ edu_source vào staging
+EXTRACT,Nganh,10,10,0,Đọc từ edu_source vào staging
+EXTRACT,PhuongThucXetTuyen,3,3,0,Đọc từ edu_source vào staging
+EXTRACT,GiangVien,118,118,0,Đọc từ edu_source vào staging
+EXTRACT,MonHoc,120,120,0,Đọc từ edu_source vào staging
+EXTRACT,HocKy,14,14,0,Đọc từ edu_source vào staging
+EXTRACT,SinhVien,4948,4948,0,Đọc từ edu_source vào staging
+EXTRACT,LichSuChuyenNganh,149,149,0,Đọc từ edu_source vào staging
+EXTRACT,LopHocPhan,3663,3663,0,Đọc từ edu_source vào staging
+EXTRACT,DangKyHocPhan,227267,227267,0,Đọc từ edu_source vào staging
+EXTRACT,HoSoTuyenSinh,8012,8012,0,Đọc từ edu_source vào staging
+TRANSFORM,dim_nganh,10,10,0,Đã chuẩn hóa 2 tên ngành
+TRANSFORM,dim_thoi_gian,14,3287,0,Sinh lịch ngày 2019-2027
+TRANSFORM,dim_sinh_vien,4948,5097,0,SCD2: 4948 SV -> 5097 phiên bản (149 dòng lịch sử đổi ngành/lớp)
+TRANSFORM,fact_ket_qua_hoc_tap,227267,224778,2489,"Loại 905 trùng, 905 thiếu điểm, 679 ngoài thang; sửa 671 điểm TK"
+TRANSFORM,fact_tuyen_sinh,8012,7964,48,"Loại 24 thiếu điểm, 24 ngoài thang; chuẩn hóa 390 tỉnh/thành"
+LOAD,dim_thoi_gian,3287,3287,0,Upsert dimension (SCD1)
+LOAD,dim_nganh,10,10,0,Upsert dimension (SCD1)
+LOAD,dim_mon_hoc,120,120,0,Upsert dimension (SCD1)
+LOAD,dim_giang_vien,118,118,0,Upsert dimension (SCD1)
+LOAD,dim_phuong_thuc_xet_tuyen,3,3,0,Upsert dimension (SCD1)
+LOAD,dim_sinh_vien,5097,5097,0,"SCD2 proc: thêm mới=0, đóng lịch sử=0"
+LOAD,fact_ket_qua_hoc_tap,224778,224778,0,Nạp qua sp_load_fact_ket_qua_hoc_tap (tra cứu khóa SCD2 theo ngày học kỳ)
+LOAD,fact_tuyen_sinh,7964,7964,0,Nạp qua sp_load_fact_tuyen_sinh

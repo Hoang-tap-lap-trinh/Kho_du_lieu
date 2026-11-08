@@ -1,0 +1,121 @@
+﻿ma_mon,ten_mon,so_tin_chi,loai_mon,ma_khoa
+KHCB001,Toán cao cấp A1,3,Đại cương,KHCB
+KHCB002,Triết học Mác - Lênin,3,Đại cương,KHCB
+KHCB003,Tiếng Anh 1,3,Đại cương,KHCB
+KHCB004,Tin học đại cương,3,Đại cương,KHCB
+KHCB005,Vật lý đại cương,3,Đại cương,KHCB
+KHCB006,Pháp luật đại cương,2,Đại cương,KHCB
+KHCB007,Toán cao cấp A2,3,Đại cương,KHCB
+KHCB008,Kinh tế chính trị Mác - Lênin,2,Đại cương,KHCB
+KHCB009,Tiếng Anh 2,3,Đại cương,KHCB
+KHCB010,Xác suất thống kê,3,Đại cương,KHCB
+KHCB011,Kỹ năng mềm,2,Đại cương,KHCB
+KHCB012,Chủ nghĩa xã hội khoa học,2,Đại cương,KHCB
+KHMT001,Cấu trúc dữ liệu và giải thuật,3,Cơ sở ngành,KHMT
+KHMT002,Lập trình hướng đối tượng,3,Cơ sở ngành,KHMT
+KHMT003,Cơ sở dữ liệu,3,Cơ sở ngành,KHMT
+KHMT004,Toán rời rạc,3,Cơ sở ngành,KHMT
+KHMT005,Kiến trúc máy tính,3,Cơ sở ngành,KHMT
+KHMT006,Hệ điều hành,3,Cơ sở ngành,KHMT
+KHMT007,Mạng máy tính,3,Cơ sở ngành,KHMT
+KHMT008,Lập trình Java,3,Cơ sở ngành,KHMT
+KHMT009,Phân tích và thiết kế hệ thống,3,Cơ sở ngành,KHMT
+KHMT010,Công nghệ phần mềm,3,Cơ sở ngành,KHMT
+KHMT011,Lập trình Python,3,Cơ sở ngành,KHMT
+KHMT012,Lý thuyết đồ thị,3,Cơ sở ngành,KHMT
+KHMT013,Lập trình Web,4,Chuyên ngành,KHMT
+KHMT014,Trí tuệ nhân tạo,2,Chuyên ngành,KHMT
+KHMT015,Học máy,2,Chuyên ngành,KHMT
+KHMT016,Kho dữ liệu,3,Chuyên ngành,KHMT
+KHMT017,Khai phá dữ liệu,3,Chuyên ngành,KHMT
+KHMT018,An toàn thông tin,3,Chuyên ngành,KHMT
+KHMT019,Phát triển ứng dụng di động,2,Chuyên ngành,KHMT
+KHMT020,Điện toán đám mây,3,Chuyên ngành,KHMT
+KHMT021,Kiểm thử phần mềm,3,Chuyên ngành,KHMT
+KHMT022,Quản lý dự án phần mềm,3,Chuyên ngành,KHMT
+KHMT023,Hệ quản trị cơ sở dữ liệu,4,Chuyên ngành,KHMT
+KHMT024,Xử lý ảnh,4,Chuyên ngành,KHMT
+KHMT025,Xử lý ngôn ngữ tự nhiên,3,Chuyên ngành,KHMT
+KHMT026,Thị giác máy tính,4,Chuyên ngành,KHMT
+KHMT027,Dữ liệu lớn,3,Chuyên ngành,KHMT
+KHMT028,Lập trình song song,2,Chuyên ngành,KHMT
+KHMT029,Đồ họa máy tính,4,Chuyên ngành,KHMT
+KHMT030,Chương trình dịch,3,Chuyên ngành,KHMT
+KHMT031,Phát triển game,2,Chuyên ngành,KHMT
+KHMT032,DevOps,3,Chuyên ngành,KHMT
+KHMT033,Blockchain căn bản,2,Chuyên ngành,KHMT
+KHMT034,Thực tập doanh nghiệp (KHMT),4,Thực tập/Đồ án,KHMT
+KHMT035,Đồ án chuyên ngành (KHMT),3,Thực tập/Đồ án,KHMT
+KHMT036,Khóa luận tốt nghiệp (KHMT),6,Thực tập/Đồ án,KHMT
+KTMT001,Mạch điện,3,Cơ sở ngành,KTMT
+KTMT002,Linh kiện điện tử,3,Cơ sở ngành,KTMT
+KTMT003,Mạch điện tử tương tự,3,Cơ sở ngành,KTMT
+KTMT004,Kỹ thuật số,3,Cơ sở ngành,KTMT
+KTMT005,Lập trình C nâng cao,3,Cơ sở ngành,KTMT
+KTMT006,Tín hiệu và hệ thống,3,Cơ sở ngành,KTMT
+KTMT007,Kỹ thuật vi xử lý,3,Cơ sở ngành,KTMT
+KTMT008,Xử lý tín hiệu số,3,Cơ sở ngành,KTMT
+KTMT009,Lý thuyết điều khiển tự động,3,Cơ sở ngành,KTMT
+KTMT010,Kỹ thuật đo lường,3,Cơ sở ngành,KTMT
+KTMT011,Kiến trúc máy tính nâng cao,3,Cơ sở ngành,KTMT
+KTMT012,Lập trình hệ thống,3,Cơ sở ngành,KTMT
+KTMT013,Lập trình vi điều khiển,4,Chuyên ngành,KTMT
+KTMT014,Hệ thống nhúng,3,Chuyên ngành,KTMT
+KTMT015,Thiết kế mạch in,4,Chuyên ngành,KTMT
+KTMT016,Thông tin số,3,Chuyên ngành,KTMT
+KTMT017,Kỹ thuật truyền thông,3,Chuyên ngành,KTMT
+KTMT018,Anten và truyền sóng,3,Chuyên ngành,KTMT
+KTMT019,Mạng cảm biến không dây,4,Chuyên ngành,KTMT
+KTMT020,Internet vạn vật,2,Chuyên ngành,KTMT
+KTMT021,Thiết kế hệ thống số FPGA,3,Chuyên ngành,KTMT
+KTMT022,Điện tử công suất,3,Chuyên ngành,KTMT
+KTMT023,Robot học,4,Chuyên ngành,KTMT
+KTMT024,Hệ điều hành nhúng thời gian thực,3,Chuyên ngành,KTMT
+KTMT025,Mạng viễn thông,3,Chuyên ngành,KTMT
+KTMT026,Kỹ thuật siêu cao tần,3,Chuyên ngành,KTMT
+KTMT027,Thiết kế vi mạch VLSI,3,Chuyên ngành,KTMT
+KTMT028,Truyền thông di động,2,Chuyên ngành,KTMT
+KTMT029,Bảo mật hệ thống IoT,3,Chuyên ngành,KTMT
+KTMT030,Điện toán biên,2,Chuyên ngành,KTMT
+KTMT031,Cơ sở dữ liệu IoT,2,Chuyên ngành,KTMT
+KTMT032,Thị giác máy cho hệ nhúng,4,Chuyên ngành,KTMT
+KTMT033,Xử lý ảnh số,3,Chuyên ngành,KTMT
+KTMT034,Thực tập doanh nghiệp (KTMT),4,Thực tập/Đồ án,KTMT
+KTMT035,Đồ án chuyên ngành (KTMT),3,Thực tập/Đồ án,KTMT
+KTMT036,Khóa luận tốt nghiệp (KTMT),6,Thực tập/Đồ án,KTMT
+KTS001,Kinh tế vi mô,3,Cơ sở ngành,KTS
+KTS002,Kinh tế vĩ mô,3,Cơ sở ngành,KTS
+KTS003,Nguyên lý kế toán,3,Cơ sở ngành,KTS
+KTS004,Nguyên lý marketing,3,Cơ sở ngành,KTS
+KTS005,Quản trị học,3,Cơ sở ngành,KTS
+KTS006,Tài chính doanh nghiệp,3,Cơ sở ngành,KTS
+KTS007,Thống kê kinh doanh,3,Cơ sở ngành,KTS
+KTS008,Kinh tế lượng,3,Cơ sở ngành,KTS
+KTS009,Hệ thống thông tin quản lý,3,Cơ sở ngành,KTS
+KTS010,Thương mại điện tử căn bản,3,Cơ sở ngành,KTS
+KTS011,Hành vi người tiêu dùng,3,Cơ sở ngành,KTS
+KTS012,Luật kinh tế,3,Cơ sở ngành,KTS
+KTS013,Marketing số,2,Chuyên ngành,KTS
+KTS014,Quản trị chuỗi cung ứng,3,Chuyên ngành,KTS
+KTS015,Phân tích dữ liệu kinh doanh,3,Chuyên ngành,KTS
+KTS016,Quản trị dự án,3,Chuyên ngành,KTS
+KTS017,Luật thương mại điện tử,4,Chuyên ngành,KTS
+KTS018,Thanh toán điện tử,2,Chuyên ngành,KTS
+KTS019,Quản trị quan hệ khách hàng,3,Chuyên ngành,KTS
+KTS020,Tiếp thị nội dung,3,Chuyên ngành,KTS
+KTS021,Tối ưu hóa công cụ tìm kiếm,4,Chuyên ngành,KTS
+KTS022,Quảng cáo trực tuyến,3,Chuyên ngành,KTS
+KTS023,Quản trị nhân sự,2,Chuyên ngành,KTS
+KTS024,Quản trị chiến lược,2,Chuyên ngành,KTS
+KTS025,Khởi nghiệp đổi mới sáng tạo,3,Chuyên ngành,KTS
+KTS026,Công nghệ tài chính,3,Chuyên ngành,KTS
+KTS027,Ngân hàng số,3,Chuyên ngành,KTS
+KTS028,Phân tích báo cáo tài chính,3,Chuyên ngành,KTS
+KTS029,Quản trị rủi ro,3,Chuyên ngành,KTS
+KTS030,Logistics thương mại điện tử,3,Chuyên ngành,KTS
+KTS031,Thiết kế trải nghiệm người dùng,4,Chuyên ngành,KTS
+KTS032,Kinh doanh quốc tế,2,Chuyên ngành,KTS
+KTS033,Kỹ năng đàm phán,4,Chuyên ngành,KTS
+KTS034,Thực tập doanh nghiệp (KTS),4,Thực tập/Đồ án,KTS
+KTS035,Đồ án chuyên ngành (KTS),3,Thực tập/Đồ án,KTS
+KTS036,Khóa luận tốt nghiệp (KTS),6,Thực tập/Đồ án,KTS

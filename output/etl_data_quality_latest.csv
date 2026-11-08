@@ -1,0 +1,12 @@
+﻿bang,loai_kiem_tra,so_dong_truoc,so_dong_sau,cach_xu_ly
+Nganh,Tên ngành sai chuẩn chữ hoa/khoảng trắng,2,0,Chuẩn hóa về danh mục tên ngành thống nhất
+SinhVien,Họ tên viết thường / dư khoảng trắng,590,0,Trim + chuẩn hóa Title Case tiếng Việt
+SinhVien,Giới tính không đồng nhất (M/F/Male/Female/nam/nu),247,0,Chuẩn hóa về Nam / Nữ
+SinhVien,"Tên tỉnh/thành không chuẩn (không dấu, viết tắt, tiền tố)",292,0,Ánh xạ về 18 tỉnh/thành chuẩn + bổ sung vùng miền
+DangKyHocPhan,"Bản ghi đăng ký trùng (ma_sv, ma_lhp)",905,0,"Loại bản sao trùng, ghi vào etl_reject (TRUNG_LAP)"
+DangKyHocPhan,Thiếu điểm quá trình hoặc điểm thi (NULL),905,0,"Loại bản ghi thiếu điểm, ghi vào etl_reject (THIEU_DIEM)"
+DangKyHocPhan,"Điểm quá trình/thi ngoài thang [0, 10]",679,0,"Loại bản ghi điểm lỗi, ghi vào etl_reject (DIEM_NGOAI_THANG)"
+DangKyHocPhan,Điểm tổng kết lệch công thức 0.4*QT + 0.6*Thi,671,0,"Tính lại điểm tổng kết, quy đổi điểm chữ và thang 4"
+HoSoTuyenSinh,Thiếu điểm xét tuyển (NULL),24,0,"Loại hồ sơ thiếu điểm, ghi vào etl_reject (THIEU_DIEM_XT)"
+HoSoTuyenSinh,Điểm xét tuyển vượt thang (30 hoặc 1200) / âm,24,0,"Loại hồ sơ điểm ngoài thang, ghi vào etl_reject (DIEM_XT_NGOAI_THANG)"
+HoSoTuyenSinh,"Tỉnh/thành, giới tính, trạng thái không thống nhất",950,0,Chuẩn hóa về danh mục chuẩn và quy đổi điểm về thang 30
