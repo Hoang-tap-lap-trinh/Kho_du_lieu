@@ -4,9 +4,9 @@
 
 - **Giảng viên hướng dẫn**: ThS. Mai Lam
 - **Nhóm thực hiện**:
-  1. **Cao Huy Hoàng** – 24ITB050 (Nhóm trưởng – CSDL nguồn, Sinh dữ liệu, Kho dữ liệu, ETL & SCD2)
-  2. **Võ Nguyễn Thành Long** – 24ITB105 (Khảo sát tài liệu, Sơ đồ thiết kế ERD/Class/Star Schema, Từ điển dữ liệu)
-  3. **Nguyễn Thanh Tùng** – 24ITB220 (Kiểm thử chất lượng dữ liệu, Truy vấn OLAP, Dashboard Power BI, Slide & Demo)
+  1. **Cao Huy Hoàng** – 24ITB050 (Nhóm trưởng – CSDL nguồn, Kho dữ liệu Star Schema, Pipeline ETL Python & SCD2, Web Dashboard MVC)
+  2. **Võ Nguyễn Thành Long** – 24ITB105 (Khảo sát tài liệu, Sơ đồ thiết kế ERD/Class/Star Schema trên Draw.io, Từ điển dữ liệu & Mapping, Báo cáo toàn văn)
+  3. **Nguyễn Thanh Tùng** – 24ITB220 (Kiểm thử chất lượng dữ liệu 10 Test Cases, Đo hiệu năng Benchmark, Truy vấn OLAP, Dashboard Power BI & DAX, Slide thuyết trình)
 
 ---
 
@@ -16,24 +16,47 @@
 Code/
 ├── .env                        # Cấu hình kết nối MariaDB/MySQL (điền mật khẩu vào đây)
 ├── .env.example                # Mẫu cấu hình .env
-├── requirements.txt            # Các thư viện Python cần thiết
-├── run_all.py                  # Chạy trọn gói từ đầu đến cuối bằng 1 lệnh
+├── requirements.txt            # Các thư viện Python cần thiết (Pandas, SQLAlchemy, python-docx, python-pptx...)
+├── run_all.py                  # Chạy trọn gói toàn bộ pipeline từ đầu đến cuối bằng 1 lệnh
+├── chay_web.bat                # Khởi động nhanh Web Dashboard tại http://localhost:8050
+├── web_app.py                  # Server HTTP khởi chạy Web Dashboard
+├── generator/
+│   └── generate_data.py        # Sinh CSDL tác vụ nguồn 3NF (> 240.000 dòng) có kiểm soát lỗi chủ đích
 ├── common/
 │   ├── db.py                   # Kết nối SQLAlchemy/PyMySQL + thực thi file .sql
 │   ├── check_connection.py     # Kiểm tra kết nối MariaDB/MySQL
 │   ├── grading.py              # Quy tắc tính điểm tổng kết & quy đổi điểm chữ/thang 4
-│   └── reference.py            # Danh mục chuẩn (Khoa, Ngành, 18 Tỉnh/Thành, 120 Môn học)
+│   └── reference.py            # Danh mục chuẩn (Khoa, Ngành, 18 Tỉnh/Thành miền Trung, 120 Môn học)
 ├── sql/
 │   ├── 01_create_source_db.sql # Tạo CSDL nguồn edu_source (OLTP 3NF - 11 bảng)
-│   ├── 02_create_dw.sql        # Tạo Kho dữ liệu edu_dw (Star Schema + Staging + Log)
+│   ├── 02_create_dw.sql        # Tạo Kho dữ liệu edu_dw (Star Schema + Staging + Log + Reject)
 │   ├── 03_procedures.sql       # Stored Procedures xử lý SCD2 & nạp 2 bảng Fact
 │   ├── 04_olap_views.sql       # Views mô phỏng CUBE và Views phẳng cho Power BI
 │   └── 05_olap_queries.sql     # 5 câu truy vấn OLAP trả lời 5 câu hỏi quản lý
-├── generator/
-│   └── generate_data.py        # Sinh ~240.000 dòng kết quả học tập + ~8.000 hồ sơ + lỗi chủ đích
 ├── etl/
 │   ├── extract.py              # Bước Extract từ edu_source sang staging
-│   ├── transform.py            # Bước Transform làm sạch, chuẩn hóa, tạo phiên bản SCD2
+│   ├── transform.py            # Bước Transform làm sạch, chuẩn hóa, tạo phiên bản SCD2, cách ly etl_reject
+│   ├── load.py                 # Bước Load nạp Dimension và Fact vào edu_dw
+│   ├── pipeline.py             # Điều phối toàn bộ pipeline ETL
+│   └── demo_scd2.py            # Kịch bản demo kiểm chứng SCD Loại 2 cho SV đổi ngành
+├── mvc/                        # Cấu trúc Web Dashboard theo chuẩn MVC
+│   ├── models/                 # OlapModel, Scd2Model, EtlModel, SqlModel
+│   ├── views/                  # View renderer và API JSON
+│   └── controllers/            # OlapController, Scd2Controller, EtlController, SqlController, Router
+├── tests/
+│   └── run_dq_tests.py         # Bộ 10 kịch bản kiểm thử chất lượng dữ liệu (10/10 PASS)
+├── analysis/
+│   └── benchmark.py            # Đo và so sánh hiệu năng truy vấn: OLTP (3NF) vs Kho (Star Schema)
+├── output/                     # Kết quả xuất ra các file CSV báo cáo OLAP, benchmark, test cases
+└── docs/                       # Toàn bộ tài liệu, slide, sơ đồ giao nộp đồ án
+    ├── Bao_cao_Kho_du_lieu_giao_duc_VKU.docx         # Báo cáo toàn văn hoàn chỉnh (Full Final Report)
+    ├── Proposal_Kho_du_lieu_giao_duc_hoan_chinh.docx # Đề cương BTL hoàn chỉnh
+    ├── Slide_Thuyet_Trinh_Kho_du_lieu.pptx           # Slide thuyết trình PowerPoint 13 slides
+    ├── diagrams/VKU_DataWarehouse_Diagrams.drawio     # Sơ đồ 4 tabs cho Draw.io (3NF, Star Schema, ETL, MVC)
+    ├── HUONG_DAN_POWERBI_OLAP.md                     # Hướng dẫn chi tiết Power BI & DAX cho Tùng
+    ├── KICH_BAN_DEMO_VA_THUYET_TRINH.md              # Kịch bản thuyết trình chi tiết & 5 câu hỏi Q&A
+    └── mapping.md                                    # Bảng ánh xạ Source-to-Target Data Mapping
+```
 │   ├── load.py                 # Bước Load vào Dimension và Fact
 │   ├── pipeline.py             # Điều phối ETL và xuất bảng log / chất lượng dữ liệu
 │   └── demo_scd2.py            # Kịch bản minh họa đổi ngành SCD2 & kiểm tra chạy lặp
@@ -58,11 +81,11 @@ Code/
    DB_PASSWORD=mat_khau_cua_ban
    ```
 
-### Bước 2: Chạy toàn bộ hệ thống bằng 1 lệnh
-Mở terminal tại thư mục `d:\Nam_Hoc\Nam_3\Kho du lieu\Bai_tap_lon\Code` và chạy:
+### Bước 2: Tải OULAD và chạy toàn bộ hệ thống
+Đặt 7 file CSV OULAD vào `data/oulad/`, sau đó chạy:
 
 ```powershell
-.venv\Scripts\python.exe run_all.py
+.venv\Scripts\python.exe run_all.py --import-oulad
 ```
 
 Hoặc chạy riêng từng bước khi muốn demo cho giảng viên:
@@ -70,8 +93,8 @@ Hoặc chạy riêng từng bước khi muốn demo cho giảng viên:
 # 1. Kiểm tra kết nối MariaDB
 .venv\Scripts\python.exe -m common.check_connection
 
-# 2. Sinh dữ liệu giả lập (~240.000 dòng) và nạp vào edu_source
-.venv\Scripts\python.exe -m generator.generate_data
+# 2. Chuyển OULAD thành CSV nguồn (không nạp database)
+.venv\Scripts\python.exe -m etl.import_oulad --csv-only
 
 # 3. Tạo kho edu_dw và chạy quy trình ETL
 .venv\Scripts\python.exe -m etl.pipeline --init-dw

@@ -6,11 +6,20 @@ Cấu hình qua biến môi trường (hoặc file .env cùng thư mục gốc d
 from __future__ import annotations
 
 import os
+import sys
 from pathlib import Path
 from urllib.parse import quote_plus
 
 from sqlalchemy import create_engine
 from sqlalchemy.engine import Engine
+
+# Bảo đảm log tiếng Việt chạy được trên Windows console mặc định CP1252.
+for _stream in (sys.stdout, sys.stderr):
+    if hasattr(_stream, "reconfigure"):
+        try:
+            _stream.reconfigure(encoding="utf-8")
+        except Exception:
+            pass
 
 ROOT_DIR = Path(__file__).resolve().parents[1]
 SQL_DIR = ROOT_DIR / "sql"

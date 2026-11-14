@@ -405,10 +405,10 @@ def chen_loi(dm, sv, hs, dk):
 # ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
-def main():
+def main(argv=None):
     parser = argparse.ArgumentParser(description="Sinh dữ liệu giả lập cho CSDL nguồn edu_source")
     parser.add_argument("--csv-only", action="store_true", help="Chỉ xuất CSV, không nạp vào CSDL")
-    args = parser.parse_args()
+    args, _ = parser.parse_known_args(argv)
     t0 = time.time()
 
     print("[1/5] Tạo danh mục (khoa, ngành, môn, học kỳ, giảng viên)...")
