@@ -173,3 +173,4 @@ TyLeGioiXuatSac = DIVIDE(
 1. Lưu file thiết kế thành: `docs/Bao_cao_OLAP_VKU.pbix`.
 2. Xuất file PDF phục vụ in ấn nộp bài: **File** -> **Export** -> **Export to PDF** -> Lưu thành `docs/Bao_cao_OLAP_VKU.pdf`.
 3. Chụp các ảnh chụp màn hình đẹp (1920x1080) để bạn Hoàng và bạn Long chèn vào Slide thuyết trình PowerPoint và Báo cáo Word.
+

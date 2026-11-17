@@ -8,4 +8,4 @@ TC06,Tính đúng đắn công thức,"Điểm tổng kết khớp công thức 
 TC07,Tính duy nhất (Grain),Không có sinh viên đăng ký trùng cùng một lớp học phần trong Fact,0 cặp trùng,0 cặp trùng,PASS
 TC08,Toàn vẹn khóa ngoại,Không có khóa ngoại mồ côi giữa Fact và các Dimension,0 dòng mồ côi,0 dòng mồ côi,PASS
 TC09,Chuẩn hóa danh mục,"Giới tính chỉ gồm {Nam, Nữ} và tỉnh/thành thuộc đúng 18 tỉnh/thành chuẩn",0 giá trị lạ,"Tỉnh lạ=0, Giới tính lạ=0",PASS
-TC10,Tính đúng của SCD2,"Các phiên bản SCD2 của sinh viên đổi ngành được đóng đúng, không chồng lấn ngày hiệu lực",Có dòng lịch sử & 0 chồng lấn,"Dòng lịch sử=149, Chồng lấn=0",PASS
+TC10,Tính đúng của SCD2,"Các phiên bản SCD2 của sinh viên đổi ngành được đóng đúng, không chồng lấn ngày hiệu lực",Có dòng lịch sử & 0 chồng lấn,"Dòng lịch sử=150, Chồng lấn=0",PASS
