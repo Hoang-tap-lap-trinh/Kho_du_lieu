@@ -4,6 +4,15 @@
 from __future__ import annotations
 
 import json
+from pathlib import Path
+import re
+import sys
+
+# Đảm bảo đường dẫn gốc được nhận diện
+ROOT_DIR = Path(__file__).resolve().parent.parent
+if str(ROOT_DIR) not in sys.path:
+    sys.path.insert(0, str(ROOT_DIR))
+
 import pandas as pd
 from common.db import DATA_DIR, OUTPUT_DIR
 from web_app import WEB_DIR, _json_default
@@ -145,11 +154,10 @@ def main() -> None:
             "benchmarks": bm.to_dict(orient="records"),
         },
         "students": students_detail,
-        "q1a": q1a.head(60).to_dict(orient="records"),
+        "q1a": q1a.to_dict(orient="records"),
     }
 
     json_str = json.dumps(bundle, ensure_ascii=False, default=_json_default)
-    html = (WEB_DIR / "index.html").read_text(encoding="utf-8")
     offline_shim = f"""<script>
     window.__OFFLINE_BUNDLE__ = {json_str};
     const _origFetch = window.fetch.bind(window);
@@ -164,7 +172,121 @@ def main() -> None:
       const u = String(url);
       const mkRes = (obj) => ({{ ok: true, json: async () => obj }});
       if (u.startsWith('/api/filters')) return mkRes(B.filters);
-      if (u.startsWith('/api/overview')) return mkRes(B.overview);
+      if (u.startsWith('/api/overview')) {{
+        const qp = new URLSearchParams(u.includes('?') ? u.split('?')[1] : '');
+        const fKhoa = qp.get('ma_khoa') || '';
+        const fNganh = qp.get('ma_nganh') || '';
+        const fNamHoc = qp.get('nam_hoc') || '';
+        const fVung = qp.get('vung_mien') || '';
+
+        if (!fKhoa && !fNganh && !fNamHoc && !fVung) {{
+          return mkRes(B.overview);
+        }}
+
+        const ov = JSON.parse(JSON.stringify(B.overview));
+        const khoaObj = fKhoa ? (B.filters.khoa || []).find(k => k.ma_khoa === fKhoa) : null;
+        const nganhObj = fNganh ? (B.filters.nganh || []).find(n => n.ma_nganh === fNganh) : null;
+        const effKhoa = fKhoa || (nganhObj ? nganhObj.ma_khoa : '');
+        const khoaName = khoaObj ? khoaObj.ten_khoa : (effKhoa ? (B.filters.khoa || []).find(k => k.ma_khoa === effKhoa)?.ten_khoa : '');
+        const nganhName = nganhObj ? nganhObj.ten_nganh : '';
+        const nganhsInKhoa = effKhoa ? (B.filters.nganh || []).filter(n => n.ma_khoa === effKhoa).map(n => n.ten_nganh) : [];
+
+        // 1. Lọc Q1 Top Môn rớt cao theo Khoa
+        if (khoaName) {{
+          if (B.q1a && B.q1a.length > 0) {{
+            const list = B.q1a
+              .filter(r => r.ten_khoa === khoaName && r.ten_mon !== 'TỔNG THEO KHOA' && r.ten_mon !== 'TỔNG TOÀN TRƯỜNG')
+              .map(r => ({{
+                ten_mon: r.ten_mon,
+                ten_khoa: r.ten_khoa,
+                tong_luot_hoc: r.tong_luot_hoc,
+                so_luot_rot: r.so_luot_rot,
+                ty_le_rot_pct: r.ty_le_rot_pct,
+                diem_tb_mon: r.diem_tb_he_10,
+                loai_mon: r.loai_mon || ''
+              }}))
+              .sort((a, b) => b.ty_le_rot_pct - a.ty_le_rot_pct)
+              .slice(0, 15);
+            if (list.length > 0) {{
+              ov.q1_top_mon = list;
+            }} else {{
+              ov.q1_top_mon = ov.q1_top_mon.filter(r => r.ten_khoa === khoaName);
+            }}
+          }} else {{
+            ov.q1_top_mon = ov.q1_top_mon.filter(r => r.ten_khoa === khoaName);
+          }}
+        }}
+
+        // 2. Lọc Q1 Học kỳ theo Năm học
+        if (fNamHoc) {{
+          ov.q1_hocky = ov.q1_hocky.filter(r => r.nam_hoc === fNamHoc);
+        }}
+
+        // 3. Lọc Q2 Dice Ngành x Phương thức
+        if (nganhName) {{
+          ov.q2_dice = ov.q2_dice.filter(r => r.ten_nganh === nganhName);
+        }} else if (nganhsInKhoa.length > 0) {{
+          ov.q2_dice = ov.q2_dice.filter(r => nganhsInKhoa.includes(r.ten_nganh));
+        }}
+
+        // 4. Lọc Q4 Xu hướng tuyển sinh theo Ngành
+        if (nganhName) {{
+          ov.q4_trend = ov.q4_trend.filter(r => r.ten_nganh === nganhName);
+        }} else if (nganhsInKhoa.length > 0) {{
+          ov.q4_trend = ov.q4_trend.filter(r => nganhsInKhoa.includes(r.ten_nganh));
+        }}
+
+        // 5. Lọc Q5 Tỉnh thành theo Vùng miền
+        if (fVung) {{
+          ov.q5_tinh = ov.q5_tinh.filter(r => r.vung_mien === fVung);
+        }}
+
+        // 6. Tính toán lại KPI động tương ứng theo lát cắt (Slice/Dice)
+        if (fVung && ov.q5_tinh.length > 0) {{
+          const sumFact = ov.q5_tinh.reduce((a, b) => a + (b.so_luot_hoc_phan || 0), 0);
+          const sumSV = ov.q5_tinh.reduce((a, b) => a + (b.so_sinh_vien || 0), 0);
+          const wD10 = ov.q5_tinh.reduce((a, b) => a + (b.diem_tb_he_10 || 0) * (b.so_luot_hoc_phan || 0), 0);
+          const wD4 = ov.q5_tinh.reduce((a, b) => a + (b.diem_tb_he_4 || 0) * (b.so_luot_hoc_phan || 0), 0);
+          const wDat = ov.q5_tinh.reduce((a, b) => a + (b.ty_le_dat_pct || 0) * (b.so_luot_hoc_phan || 0), 0);
+          if (sumFact > 0) {{
+            ov.kpi.tong_luot_hoc_phan = sumFact;
+            ov.kpi.tong_sinh_vien = sumSV;
+            ov.kpi.diem_tb_he_10 = Math.round((wD10 / sumFact) * 100) / 100;
+            ov.kpi.diem_tb_he_4 = Math.round((wD4 / sumFact) * 100) / 100;
+            ov.kpi.ty_le_dat_pct = Math.round((wDat / sumFact) * 100) / 100;
+            ov.kpi.ty_le_rot_pct = Math.round((100 - ov.kpi.ty_le_dat_pct) * 100) / 100;
+          }}
+        }} else if ((nganhName || nganhsInKhoa.length > 0) && ov.q2_dice.length > 0) {{
+          const sumFact = ov.q2_dice.reduce((a, b) => a + (b.so_luot_hoc_phan || 0), 0);
+          const sumSV = ov.q2_dice.reduce((a, b) => a + (b.so_sinh_vien || 0), 0);
+          const wD10 = ov.q2_dice.reduce((a, b) => a + (b.diem_tb_he_10 || 0) * (b.so_luot_hoc_phan || 0), 0);
+          const wD4 = ov.q2_dice.reduce((a, b) => a + (b.diem_tb_he_4 || 0) * (b.so_luot_hoc_phan || 0), 0);
+          const wDat = ov.q2_dice.reduce((a, b) => a + (b.ty_le_dat_pct || 0) * (b.so_luot_hoc_phan || 0), 0);
+          const sumTS = ov.q4_trend.reduce((a, b) => a + (b.so_ho_so || 0), 0);
+          if (sumFact > 0) {{
+            ov.kpi.tong_luot_hoc_phan = sumFact;
+            ov.kpi.tong_sinh_vien = sumSV;
+            ov.kpi.diem_tb_he_10 = Math.round((wD10 / sumFact) * 100) / 100;
+            ov.kpi.diem_tb_he_4 = Math.round((wD4 / sumFact) * 100) / 100;
+            ov.kpi.ty_le_dat_pct = Math.round((wDat / sumFact) * 100) / 100;
+            ov.kpi.ty_le_rot_pct = Math.round((100 - ov.kpi.ty_le_dat_pct) * 100) / 100;
+            if (sumTS > 0) ov.kpi.tong_ho_so_tuyen_sinh = sumTS;
+          }}
+        }} else if (fNamHoc && ov.q1_hocky.length > 0) {{
+          const sumFact = ov.q1_hocky.reduce((a, b) => a + (b.tong_luot_hoc || 0), 0);
+          const wD10 = ov.q1_hocky.reduce((a, b) => a + (b.diem_tb_he_10 || 0) * (b.tong_luot_hoc || 0), 0);
+          const wRot = ov.q1_hocky.reduce((a, b) => a + (b.ty_le_rot_pct || 0) * (b.tong_luot_hoc || 0), 0);
+          if (sumFact > 0) {{
+            ov.kpi.tong_luot_hoc_phan = sumFact;
+            ov.kpi.diem_tb_he_10 = Math.round((wD10 / sumFact) * 100) / 100;
+            ov.kpi.diem_tb_he_4 = Math.round((ov.kpi.diem_tb_he_10 / 2.5) * 100) / 100;
+            ov.kpi.ty_le_rot_pct = Math.round((wRot / sumFact) * 100) / 100;
+            ov.kpi.ty_le_dat_pct = Math.round((100 - ov.kpi.ty_le_rot_pct) * 100) / 100;
+          }}
+        }}
+
+        return mkRes(ov);
+      }}
       if (u.startsWith('/api/etl')) return mkRes(B.etl);
       if (u.startsWith('/api/student')) {{
         const m = new URLSearchParams(u.split('?')[1] || '').get('ma_sv') || '19IT001';
@@ -201,11 +323,21 @@ def main() -> None:
     }};
     </script>"""
 
-    standalone_html = html.replace("<script>", offline_shim + "\n  <script>", 1)
+    raw_html = (WEB_DIR / "index.html").read_text(encoding="utf-8")
+    # Làm sạch các bản shim cũ nếu đã từng được chèn trước đây
+    clean_html = re.sub(r"\s*<script>\s*window\.__OFFLINE_BUNDLE__\s*=[\s\S]*?</script>", "", raw_html)
+
+    # Chèn offline_shim ngay trước thẻ <script> cuối cùng (chứa logic ứng dụng web)
+    script_pos = clean_html.rfind("<script>")
+    if script_pos != -1:
+        standalone_html = clean_html[:script_pos] + offline_shim + "\n  " + clean_html[script_pos:]
+    else:
+        standalone_html = clean_html + "\n" + offline_shim
+
     out_path = WEB_DIR / "dashboard_standalone.html"
     out_path.write_text(standalone_html, encoding="utf-8")
     (WEB_DIR / "index.html").write_text(standalone_html, encoding="utf-8")
-    print(f"[OK] Đã tạo file Web Dashboard độc lập (có sẵn toàn bộ dữ liệu): {out_path}")
+    print(f"[OK] Đã tạo file Web Dashboard độc lập (có sẵn toàn bộ dữ liệu & lọc động): {out_path}")
 
 
 if __name__ == "__main__":

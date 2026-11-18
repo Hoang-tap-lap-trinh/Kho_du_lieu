@@ -41,7 +41,10 @@ def get_overview_data(filters: dict) -> dict:
     params: dict = {}
 
     if filters.get("ma_khoa"):
-        where_kq.append("ng.ma_khoa = :ma_khoa")
+        if filters["ma_khoa"] == "KHCB":
+            where_kq.append("mh.ma_khoa = :ma_khoa")
+        else:
+            where_kq.append("(ng.ma_khoa = :ma_khoa OR mh.ma_khoa = :ma_khoa)")
         params["ma_khoa"] = filters["ma_khoa"]
     if filters.get("ma_nganh"):
         where_kq.append("ng.ma_nganh = :ma_nganh")
@@ -66,6 +69,7 @@ def get_overview_data(filters: dict) -> dict:
             ROUND(100.0 * AVG(1 - kq.ket_qua_dat), 2)     AS ty_le_rot_pct
         FROM fact_ket_qua_hoc_tap kq
         INNER JOIN dim_sinh_vien sv ON kq.sinh_vien_key = sv.sinh_vien_key
+        INNER JOIN dim_mon_hoc   mh ON kq.mon_hoc_key   = mh.mon_hoc_key
         INNER JOIN dim_nganh     ng ON kq.nganh_key     = ng.nganh_key
         INNER JOIN dim_thoi_gian tg ON kq.thoi_gian_key = tg.thoi_gian_key
         WHERE {where_sql}
@@ -100,6 +104,11 @@ def get_overview_data(filters: dict) -> dict:
     """, params)
 
     # 3. Q1B: Top 15 môn có tỷ lệ rớt cao nhất (có áp dụng bộ lọc)
+    where_q1b = list(where_kq)
+    if filters.get("ma_khoa"):
+        where_q1b = [c for c in where_q1b if "ng.ma_khoa" not in c and "mh.ma_khoa" not in c] + ["mh.ma_khoa = :ma_khoa"]
+    where_q1b_sql = " AND ".join(where_q1b)
+
     q1_top_mon = query_records(dw_engine, f"""
         SELECT
             mh.ma_mon,
@@ -115,7 +124,7 @@ def get_overview_data(filters: dict) -> dict:
         INNER JOIN dim_sinh_vien sv ON kq.sinh_vien_key = sv.sinh_vien_key
         INNER JOIN dim_nganh     ng ON kq.nganh_key     = ng.nganh_key
         INNER JOIN dim_thoi_gian tg ON kq.thoi_gian_key = tg.thoi_gian_key
-        WHERE {where_sql}
+        WHERE {where_q1b_sql}
         GROUP BY mh.ma_mon, mh.ten_mon, mh.ten_khoa, mh.loai_mon
         ORDER BY ty_le_rot_pct DESC
         LIMIT 15
@@ -132,6 +141,7 @@ def get_overview_data(filters: dict) -> dict:
             ROUND(100.0 * AVG(1 - kq.ket_qua_dat), 2) AS ty_le_rot_pct,
             ROUND(AVG(kq.diem_tong_ket), 2)           AS diem_tb_he_10
         FROM fact_ket_qua_hoc_tap kq
+        INNER JOIN dim_mon_hoc   mh ON kq.mon_hoc_key   = mh.mon_hoc_key
         INNER JOIN dim_sinh_vien sv ON kq.sinh_vien_key = sv.sinh_vien_key
         INNER JOIN dim_nganh     ng ON kq.nganh_key     = ng.nganh_key
         INNER JOIN dim_thoi_gian tg ON kq.thoi_gian_key = tg.thoi_gian_key
@@ -141,7 +151,17 @@ def get_overview_data(filters: dict) -> dict:
     """, params)
 
     # 5. Q2: Dice Ngành x Phương thức xét tuyển
-    q2_dice = query_records(dw_engine, """
+    where_q2 = ["ten_nganh <> 'ALL_NGANH'", "ten_phuong_thuc <> 'ALL_PHUONG_THUC'"]
+    params_q2: dict = {}
+    if filters.get("ma_nganh"):
+        where_q2.append("ten_nganh = (SELECT ten_nganh FROM dim_nganh WHERE ma_nganh = :q2_ma_nganh LIMIT 1)")
+        params_q2["q2_ma_nganh"] = filters["ma_nganh"]
+    elif filters.get("ma_khoa") and filters.get("ma_khoa") != "KHCB":
+        where_q2.append("ten_nganh IN (SELECT ten_nganh FROM dim_nganh WHERE ma_khoa = :q2_ma_khoa)")
+        params_q2["q2_ma_khoa"] = filters["ma_khoa"]
+    where_q2_sql = " AND ".join(where_q2)
+
+    q2_dice = query_records(dw_engine, f"""
         SELECT
             ten_nganh,
             ten_phuong_thuc,
@@ -151,9 +171,9 @@ def get_overview_data(filters: dict) -> dict:
             diem_tb_he_4,
             ty_le_dat_pct
         FROM vw_olap_cube_nganh_phuongthuc
-        WHERE ten_nganh <> 'ALL_NGANH' AND ten_phuong_thuc <> 'ALL_PHUONG_THUC'
+        WHERE {where_q2_sql}
         ORDER BY ten_nganh, ten_phuong_thuc
-    """)
+    """, params_q2)
 
     # 6. Q3: Tương quan Điểm xét tuyển đầu vào vs GPA Học kỳ 1
     where_q3 = ["1=1"]
@@ -161,6 +181,9 @@ def get_overview_data(filters: dict) -> dict:
     if filters.get("ma_nganh"):
         where_q3.append("ma_nganh = :ma_nganh")
         params_q3["ma_nganh"] = filters["ma_nganh"]
+    elif filters.get("ma_khoa") and filters.get("ma_khoa") != "KHCB":
+        where_q3.append("ma_nganh IN (SELECT ma_nganh FROM dim_nganh WHERE ma_khoa = :ma_khoa)")
+        params_q3["ma_khoa"] = filters["ma_khoa"]
     where_q3_sql = " AND ".join(where_q3)
 
     q3_bands = query_records(dw_engine, f"""
@@ -193,7 +216,17 @@ def get_overview_data(filters: dict) -> dict:
     """, params_q3)
 
     # 7. Q4: Xu hướng tuyển sinh & nhập học qua các năm theo ngành
-    q4_trend = query_records(dw_engine, """
+    where_q4 = ["1=1"]
+    params_q4: dict = {}
+    if filters.get("ma_nganh"):
+        where_q4.append("ng.ma_nganh = :q4_ma_nganh")
+        params_q4["q4_ma_nganh"] = filters["ma_nganh"]
+    elif filters.get("ma_khoa") and filters.get("ma_khoa") != "KHCB":
+        where_q4.append("ng.ma_khoa = :q4_ma_khoa")
+        params_q4["q4_ma_khoa"] = filters["ma_khoa"]
+    where_q4_sql = " AND ".join(where_q4)
+
+    q4_trend = query_records(dw_engine, f"""
         SELECT
             ng.ma_nganh,
             ng.ten_nganh,
@@ -205,9 +238,10 @@ def get_overview_data(filters: dict) -> dict:
         FROM fact_tuyen_sinh ts
         INNER JOIN dim_nganh     ng ON ts.nganh_key     = ng.nganh_key
         INNER JOIN dim_thoi_gian tg ON ts.thoi_gian_key = tg.thoi_gian_key
+        WHERE {where_q4_sql}
         GROUP BY ng.ma_nganh, ng.ten_nganh, tg.nam
         ORDER BY ng.ten_nganh, tg.nam
-    """)
+    """, params_q4)
 
     # 8. Q5: Kết quả học tập theo Tỉnh/Thành
     q5_tinh = query_records(dw_engine, f"""
@@ -221,6 +255,7 @@ def get_overview_data(filters: dict) -> dict:
             ROUND(100.0 * AVG(kq.ket_qua_dat), 2)       AS ty_le_dat_pct,
             ROUND(100.0 * AVG(CASE WHEN kq.diem_tong_ket >= 8.0 THEN 1 ELSE 0 END), 2) AS ty_le_gioi_pct
         FROM fact_ket_qua_hoc_tap kq
+        INNER JOIN dim_mon_hoc   mh ON kq.mon_hoc_key   = mh.mon_hoc_key
         INNER JOIN dim_sinh_vien sv ON kq.sinh_vien_key = sv.sinh_vien_key
         INNER JOIN dim_nganh     ng ON kq.nganh_key     = ng.nganh_key
         INNER JOIN dim_thoi_gian tg ON kq.thoi_gian_key = tg.thoi_gian_key
